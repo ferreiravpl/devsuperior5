@@ -1,7 +1,6 @@
 package com.devsuperior.dscommerce.services;
 
 import com.devsuperior.dscommerce.dto.OrderDTO;
-import com.devsuperior.dscommerce.dto.OrderItemDTO;
 import com.devsuperior.dscommerce.entities.Order;
 import com.devsuperior.dscommerce.entities.OrderItem;
 import com.devsuperior.dscommerce.entities.OrderStatus;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -30,12 +28,16 @@ public class OrderService {
     private ProductRepository productRepository;
 
     @Autowired
+    private AuthService authService;
+
+    @Autowired
     private UserService userService;
 
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
         Order order = repository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Recurso não encontrado"));
+        authService.validateSelfOrAdmin(order.getClient().getId());
         return new OrderDTO(order);
     }
 
