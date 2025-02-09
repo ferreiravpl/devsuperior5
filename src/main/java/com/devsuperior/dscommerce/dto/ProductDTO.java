@@ -1,6 +1,5 @@
 package com.devsuperior.dscommerce.dto;
 
-import com.devsuperior.dscommerce.entities.Category;
 import com.devsuperior.dscommerce.entities.Product;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,9 +43,9 @@ public class ProductDTO {
         description = entity.getDescription();
         price = entity.getPrice();
         imgUrl = entity.getImgUrl();
-        for (Category c : entity.getCategories()) {
-            categories.add(new CategoryDTO(c));
-        }
+        categories.addAll(entity.getCategories().stream()
+                .map(CategoryDTO::new)
+                .toList());
     }
 
     public Long getId() {
